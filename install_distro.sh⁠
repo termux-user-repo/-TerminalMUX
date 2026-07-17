@@ -1,0 +1,58 @@
+#!/bin/bash
+
+# Dil Seçimi
+echo "Select Language / Dil Seçiniz: (en/tr)"
+read lang
+
+if [ "$lang" == "tr" ]; then
+    help_text="KOMUTLAR: /help (yardım), /info (sistem), /reboot (yeniden başlat), /exit (çıkış)"
+    msg_ready="Sistem hazır! 'reboot -p' yazarak başlatın."
+else
+    help_text="COMMANDS: /help (help), /info (system), /reboot (reboot), /exit (exit)"
+    msg_ready="System ready! Type 'reboot -p' to start."
+fi
+
+# Gerekli paketler
+apk update && apk add bash neofetch
+
+clear
+echo "=== LOGIN ==="
+read -p "Username: " input_user
+read -s -p "Password: " input_pass
+echo -e "\n============"
+
+if [ "$input_user" == "Admin" ] && [ "$input_pass" == "Admin" ]; then
+    echo "$msg_ready"
+    
+    # Komutları ~/.bashrc içine ekliyoruz
+    cat << EOF >> ~/.bashrc
+alias /help='echo "$help_text"'
+alias /info='clear; echo -e "\e[36m
+      /\\
+     /  \\
+    /    \\
+   /      \\
+  /        \\
+ /          \\
+/____________\\
+\e[37mDistro: Arch-Alpine Hybrid
+Kernel: 5.10.x-iSH
+\e[32m
+       ___  
+      /   \\  
+     / /\\  \\ 
+    / /  \\  \\
+   / /    \\  \\
+  / /______\\  \\
+ / /        \\  \\
+/_/          \\_\\
+\e[37mOS: Alpine Linux (iSH)
+Terminal: iSH/iOS"'
+
+alias /reboot='clear && /info && echo "System booting..."'
+alias /exit='exit'
+EOF
+    source ~/.bashrc
+else
+    echo "Access Denied / Erişim Reddedildi"
+fi
